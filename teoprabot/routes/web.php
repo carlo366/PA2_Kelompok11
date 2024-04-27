@@ -17,16 +17,16 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 
-Route::middleware(['auth', 'role:costumer', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('users.dasboard');
+// Route::middleware(['auth', 'role:costumer', 'verified'])->group(function () {
+    Route::get('/', function () {
+        return view('costumers.dasboard');
     })->name('dashboard');
-});
+// });
 
 // Route::middleware(['auth','role:admin','verified'])->group(function () {
     Route::get('/dasboard-admin',function () {
@@ -49,6 +49,8 @@ Route::middleware(['auth', 'role:costumer', 'verified'])->group(function () {
         Route::get('admin/tambah_gambar/{id_product}/kirim','indexgambar')->name('indexgambar');
         Route::post('admin/tambah_gambar/{id_product}/kirim','StoreGambar')->name('storegambar');
         Route::get('/admin/delete/{images_id}/hapus','HapusGambar')->name('hapusgambar');
+        Route::get('admin/edit-produk','EditProduk')->name('editproduk');
+        Route::post('admin/tambah-produk','StoreProduct')->name('storeproduk');
     });
 
 // });

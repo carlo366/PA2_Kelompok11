@@ -2,6 +2,9 @@
 @section('title','Admin | All Produk')
 @push('css')
 <link rel="stylesheet" href="{{asset('admin/vendors/simple-datatables/style.css')}}">
+<link rel="stylesheet" href="{{asset('admin/vendors/choices.js/choices.min.css')}}">
+<link rel="stylesheet" href="{{asset('admin/vendors/quill/quill.bubble.css')}}">
+<link rel="stylesheet" href="{{asset('admin/vendors/quill/quill.snow.css')}}">
 @endpush
 @section('main-content')
 

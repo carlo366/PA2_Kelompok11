@@ -28,9 +28,7 @@
   cursor: not-allowed;
 }
 
-.choices [hidden] {
-  display: none !important;
-}
+
 
 .choices[data-type*='select-one'] {
   cursor: pointer;

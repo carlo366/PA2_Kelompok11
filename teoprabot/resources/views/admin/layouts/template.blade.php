@@ -30,8 +30,7 @@
         <div id="sidebar" class='active'>
             <div class="sidebar-wrapper active">
     <div class="sidebar-header">
-        <h1 class="judul">TEO 366 PRABOT</h1>
-        <h6>Menjual barang / memperbaiki</h6>
+        <img src="{{asset('logo.png')}}" style="width: 6em; height:2em;" alt="">
     </div>
     <div class="sidebar-menu">
         <ul class="menu">
