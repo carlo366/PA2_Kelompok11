@@ -20,6 +20,7 @@ return new class extends Migration
             $table->json('nameproduct');
             $table->string('nama',255);
             $table->string('kondisi');
+            $table->string('kategory');
             $table->text('deskripsi');
             $table->text('phonenumber');
             $table->text('zip');
@@ -28,9 +29,8 @@ return new class extends Migration
             $table->text('kecamatan');
             $table->text('desa');
             $table->text('alamat');
-            $table->text('price');
+            $table->text('price')->nullable();
             $table->text('request');
-            $table->dateTime('tanggalpengambilan');
             $table->string('status')->default('pending');
             $table->text('customer_feedback')->nullable();
             $table->timestamps();

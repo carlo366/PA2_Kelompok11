@@ -212,23 +212,29 @@ $totaltred = App\Models\tradeins::where('user_id', $userid)->count();
 
         <div class="card mb-4">
             <div class="card-body">
-                <h5 class="card-title">Status: <span class="badge bg-warning text-dark">Proses</span></h5>
-
                 @foreach ($tradein as $tr)
-                    @php
+                @if ($tr->status == null)
+                <h5 class="card-title">Status: <span class="badge bg-warning text-dark">Proses</span></h5>
+                @elseif($tr->status == 'tolak')
+                <h5 class="card-title">Status: <span class="badge bg-danger text-dark">ditolak</span></h5>
+                @endif
+                @php
                         // Mendekode string JSON menjadi array PHP
                         $decodedArray = json_decode($tr->name, true);
-                    @endphp
+                        @endphp
 
-                    <div class="mb-4">
-                        <h5>Nama Barang:</h5>
-                        <ul class="list-group">
-                            @if (is_array($decodedArray))
-                                @foreach ($decodedArray as $item)
+
+@if ($tr->status == null)
+
+<div class="mb-4">
+    <h5>Nama Barang:</h5>
+    <ul class="list-group">
+        @if (is_array($decodedArray))
+        @foreach ($decodedArray as $item)
                                     <li class="list-group-item  ">{{ $item }}</li>
-                                @endforeach
+                                    @endforeach
                             @else
-                                <li class="list-group-item">Tidak ada data barang yang valid.</li>
+                            <li class="list-group-item">Tidak ada data barang yang valid.</li>
                             @endif
                         </ul>
                     </div>
@@ -248,23 +254,29 @@ $totaltred = App\Models\tradeins::where('user_id', $userid)->count();
                     </div>
 
                     <div class="mb-4">
+                        <h5>deskripsi:</h5>
+                        <span class="text-muted">{{ $tr->deskripsi }}</span>
+                    </div>
+
+                    <div class="mb-4">
                         <h5>Gambar Produk:</h5>
                         <div class="row">
                             @foreach ($productImage as $productIMG)
                                 <div class="col-md-3 mb-3">
-                                    <div class="card">
+                                    <div class="card d-flex">
                                         <img src="{{ asset($productIMG->image) }}" class="card-img-top" alt="Img" style="height: 150px; object-fit: cover;">
                                     </div>
                                 </div>
                             @endforeach
+
+
                         </div>
                     </div>
-
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <tbody>
                                 <tr>
-                                    <td>Harga Dasar</td>
+                                    <td>Harga Saya</td>
                                     <td id="hasil_kurang">Rp {{ number_format($tr->hargadasar, 0, ',', '.') }}</td>
                                 </tr>
                             </tbody>
@@ -278,13 +290,50 @@ $totaltred = App\Models\tradeins::where('user_id', $userid)->count();
                             </tbody>
                         </table>
                     </div>
-                    <a href="{{route('deletetradeins',$tr->id)}}"  class="btn btn-danger">Hapus </a>
+                    <a href="#" onclick="confirmDelete('{{ $tr->id }}')"  class="btn btn-danger">Hapus </a>
                     @if ($tr->price != null)
-                    <a href="" class="btn btn-secondary">Tawar lagi</a>
-                        <a href="" class="btn btn-success">Setuju</a>
-                    @endif
-                    </form>
-                    @endforeach
+                    <!-- "Tawar lagi" button to trigger the modal -->
+<a href="#" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#tawarModal">Tawar lagi</a>
+<div class="modal fade" id="tawarModal" tabindex="-1" aria-labelledby="tawarModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tawarModalLabel">Masukkan Tawaran Baru</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="tawarForm" action="{{ route('tawarancustom', $tr->id) }}" method="POST">
+                    @csrf
+                    <div class="mb-3">
+                        <input type="hidden" name="id" value="{{$tr->id}}">
+                        <label for="price" class="form-label">Harga Tawaran</label>
+                        <input type="number" class="form-control" name="hargadasar" id="price" min="0" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                        <button type="submit" class="btn btn-primary">Tawar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<form action="{{route('setujuu')}}" method="POST">
+    @csrf
+    <input type="hidden" name="price" value="{{$tr->price}}">
+    <input type="hidden" name="id" value="{{$tr->id}}">
+    <button type="submit" class="btn btn-success">Setuju Harga Admin</button>
+</form>
+
+
+@endif
+
+</form>
+@elseif($tr->status == 'tolak')
+<p class="text-danger">*hapus untuk membuat ulang tukar tambah</p>
+<a href="#" onclick="confirmDelete('{{ $tr->id }}')"  class="btn btn-danger">Hapus </a>
+@endif
+@endforeach
             </div>
         </div>
     </div>
@@ -372,13 +421,15 @@ $totaltred = App\Models\tradeins::where('user_id', $userid)->count();
 
                        @endif
           @else
-          <p id="toggleTableBtn">Tukar Tambah</p>
-
-          <div class="container hidden" id="tableContainer">
-
-
-                        <h2 class="mt-5 mb-3 text-muted text-center">Masukkin Barang Ke Keranjang</h2>
-                      </div>
+          <div class="container mt-5">
+            <div class="d-flex align-items-center ">
+                <p id="toggleTableBtn" class="btn">Tukar Tambah</p>
+                <button type="button" style="border: none; padding-bottom:13px" data-bs-toggle="popover" data-bs-content="Masukkan Barang Terlebih Dahulu"> <i class="bi bi-info-circle-fill text-danger" style="padding-bottom: 12px"></i></button>
+                  </div>
+            <div class="alert alert-info hidden"  id="tableContainer" role="alert">
+                <h4 class="alert-heading text-center">Masukkan Barang Ke Keranjang</h4>
+            </div>
+        </div>
               @endif
 
 
@@ -458,4 +509,62 @@ $('form').submit(function() {
         });
     });
 </script>
+
+
+
+
+
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<script type="text/javascript">
+  function confirmDelete(categoryId) {
+        swal({
+            title: "Yakin ingin menghapus?",
+            text: "Data akan hilang jika dihapus!",
+            icon: "warning",
+            buttons: {
+                cancel: "Batal",
+                confirm: {
+                    text: "Hapus",
+                    value: true,
+                    visible: true,
+                    className: "btn-danger",
+                }
+            },
+            dangerMode: true,
+        })
+        .then((willDelete) => {
+            if (willDelete) {
+                // Jika pengguna menekan "Hapus", arahkan ke route delete dengan menyertakan ID
+                window.location.href = "{{ route('deletetradeins', ':id') }}".replace(':id', categoryId);
+                swal("Poof! Your imaginary file has been deleted!", {
+      icon: "success",
+    timer: 1500,
+button:false,});
+            } else {
+                swal("Operasi dibatalkan.", {
+                    icon: "info",
+                    buttons: false,
+                    timer: 1500,
+                });
+            }
+        });
+    }
+    function berhasil() {
+        swal({
+            title: "Berhasil",
+            text: "menambahkan kategori",
+            icon: "success",
+            dangerMode: true,
+            button: false,
+            time: 1500,
+        })
+    }
+
+    setTimeout(function() {
+        var alertMessage = document.getElementById('alertMessage');
+        if (alertMessage) {
+            alertMessage.style.display = 'none';
+        }
+    }, 3000);
+    </script>
 @endsection

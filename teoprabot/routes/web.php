@@ -2,19 +2,25 @@
 
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\Gallery;
+use App\Http\Controllers\Admin\jual as AdminJual;
+use App\Http\Controllers\Admin\OrderCOntroller as AdminOrderCOntroller;
 use App\Http\Controllers\Admin\ProductsController;
+use App\Http\Controllers\Admin\reprasi as AdminReprasi;
 use App\Http\Controllers\Admin\SliderController;
+use App\Http\Controllers\Admin\Tradeins as AdminTradeins;
 use App\Http\Controllers\CartsController;
 use App\Http\Controllers\Customer\CartsController as CustomerCartsController;
 use App\Http\Controllers\Customer\HomeController;
+use App\Http\Controllers\Customer\jual;
 use App\Http\Controllers\Customer\OrderController;
 use App\Http\Controllers\Customer\ProfileController as CustomerProfileController;
+use App\Http\Controllers\Customer\reprasi;
 use App\Http\Controllers\ProfileController;
 use App\Models\Products;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DependentDropdownController;
 use App\Models\Slider;
-
+use App\Models\tradeins;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -25,6 +31,7 @@ use App\Models\Slider;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
 
 // Route::get('/', function () {
 //     return view('welcome');
@@ -51,7 +58,7 @@ use App\Models\Slider;
         Route::post('/update-quantity','updateQuantity')->name('updateQuantity');
         Route::get('/checkout','checkout')->name('checkout');
         Route::get('/checkout','Checkout')->name('checkout');
-        Route::post('/get-regencies','getRegencies')->name('getRegencies');
+        // Route::post('/get-regencies','getRegencies')->name('getRegencies');
         Route::post('/getkabupaten','getkabupaten')->name('getkabupaten');
         Route::post('/getkecamatan','getkecamatan')->name('getkecamatan');
         Route::post('/getdesa','getdesa')->name('getdesa');
@@ -59,6 +66,8 @@ use App\Models\Slider;
         Route::post('/trandins','tradeins')->name('tradeins');
         Route::get('/students/json', 'trandeins')->name('trandeins');
         Route::post('/user-profile/dashboard/updateprofil','updateprofile')->name('updateprofile');
+        Route::post('customer/tawaran','tawarancustom')->name('tawarancustom');
+        Route::post('customer/tawaran/approve','setujuu')->name('setujuu');
 
     });
     Route::controller(CustomerProfileController::class)->group(function(){
@@ -71,8 +80,35 @@ use App\Models\Slider;
         Route::get('/pemesanan','pesan')->name('pesan');
         Route::get('/bayar','index')->name('index');
         Route::post('/bayar','payment_post')->name('payment_post');
+        Route::get('customer/order/detil-pemesanan/{id}','detilpemesanan')->name('detilpemesanan');
+        Route::post('/customer/order/bayar/{id}','uploadbayar')->name('uploadbayar');
+        Route::get('/payment/{id}/delete', 'delete')->name('deletePayment');
+        Route::get('admin/order/mengirim','mengirim')->name('mengirim');
+        Route::get('customer/order/diterima/{id}','diterima')->name('diterima');
+        Route::post('/beri-ulasan/{id}', 'beriUlasan')->name('beri.ulasan');
+        Route::get('customer/order/jadwal','jadwal')->name('jadwal');
+        Route::put('admin/orders/{id_orders}/tanggalantar', 'updateTanggalAntar')->name('updateTanggalAntar');
+
         // Route::get('/akun/profile/pengaturanpassword','profilpassword')->name('profilpassword');
       });
+
+      Route::controller(jual::class)->group(function(){
+  Route::get('customer/jual', 'jual')->name('jual');
+    Route::get('customer/jualcategory', 'jualcategory')->name('jualcategory');
+    Route::post('customer/saveCategory', 'saveCategory')->name('saveCategory');
+    Route::post('/getkabupatens', 'getkabupatens')->name('getkabupatens');
+    Route::post('/getkecamatans', 'getkecamatans')->name('getkecamatans');
+    Route::post('/getdesas', 'getdesas')->name('getdesas');
+    Route::post('/customer/jualbarang','jualbarang')->name('jualbarang');
+      });
+
+      Route::controller(reprasi::class)->group(function(){
+        route::get('customer/perbaiki','perbaiki')->name('perbaiki');
+        Route::post('/getkabupatenss', 'getkabupatenss')->name('getkabupatenss');
+        Route::post('/getkecamatanss', 'getkecamatanss')->name('getkecamatanss');
+        Route::post('/getdesass', 'getdesass')->name('getdesass');
+      });
+
 
 // });
 
@@ -90,10 +126,10 @@ use App\Models\Slider;
     Route::controller(CategoryController::class)->group(function(){
         Route::get('admin/semua-kategori','index')->name('adminallkategori');
         Route::post('admin/store-kategori','StoreKategori')->name('storekategori');
-        Route::get('admin/delete-kategori/{id_categories}','DeleteCategory')->name('deletecategori');
         Route::post('admin/update-kategori','UpdateCategory')->name('updatecategory');
         Route::get('admin/edit-kategori/{id_categories}','EditCategory')->name('editcategory');
-        Route::post('admin/update-kategori','UpdateCategory')->name('updatecategory');
+        Route::get('admin/delete-kategori/{id_categories}','DeleteCategory')->name('deletecategori');
+
 
     });
 
@@ -111,15 +147,51 @@ use App\Models\Slider;
     Route::controller(Gallery::class)->group(function(){
         Route::get('admin/semua-gallery','index')->name('semua-gallery');
         Route::post('admin/tambah-gallery','storeGallery')->name('storeGallery');
-        Route::get('admin/edit-gallery','editgallery')->name('editgallery');
+        Route::get('admin/edit-gallery/{id}','editgallery')->name('editgallery');
+        Route::post('admin/update-gallery','Updategallery')->name('updategallery');
+        Route::get('admin/delete-gallery/{id}','Deletegallery')->name('deletegallery');
     });
 
     Route::controller(SliderController::class)->group(function(){
         Route::get('admin/semua-slider','index')->name('semua-slider');
         Route::post('admin/tambah-slider','storeslider')->name('storeslider');
-        Route::get('admin/edit-slider','editslider')->name('editslider');
-
+        Route::post('admin/update-slider','Updateslider')->name('updateslider');
+        Route::get('admin/edit-slider/{id}','Editslider')->name('editslider');
+        Route::get('admin/delete-slider/{id}','Deleteslider')->name('deleteslider');
     });
+
+    Route::controller(AdminTradeins::class)->group(function(){
+     Route::get('admin/semua-tradeins','index')->name('semua-tradeins');
+     Route::get('admin/detil-tradeins/{id}','detil')->name('detil-tradeins');
+     Route::post('admin/tawaran/{id}','tawaran')->name('tawaran');
+     Route::post('admin/tawaran/approve/{id}','setuju')->name('setuju');
+     Route::post('admin/tawaran/approvenoprice/{id}','setujunoprice')->name('setujunoprice');
+     Route::post('admin/tawaran/reject/{id}','reject')->name('reject');
+     Route::post('admin/tawaran/batal/{id}','batal')->name('batal');
+    });
+
+    Route::controller(AdminOrderCOntroller::class)->group(function(){
+        Route::get('admin/semua-pemesanan','index')->name('semua-pemesanan');
+        Route::get('/admin/detilpemesanan/{id}', 'detilpemesanan')->name('detil-pemesanan');
+        Route::post('admin/approvepe/{order_id}','approvepem')->name('approvepem');
+    });
+
+
+
+    Route::controller(AdminJual::class)->group(function(){
+        Route::get('admin/semua-jual','index')->name('semuajual');
+        // Route::get('/admin/detilpemesanan/{id}', 'detilpemesanan')->name('detil-pemesanan');
+        // Route::post('admin/approvepe/{order_id}','approvepem')->name('approvepem');
+    });
+
+
+
+    Route::controller(AdminReprasi::class)->group(function(){
+        Route::get('admin/semua-reprasi','index')->name('semua-reprasi');
+        // Route::get('/admin/detilpemesanan/{id}', 'detilpemesanan')->name('detil-pemesanan');
+        // Route::post('admin/approvepe/{order_id}','approvepem')->name('approvepem');
+    });
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

@@ -43,4 +43,16 @@ class Gallery extends Controller
             return redirect()->route('semua-gallery')->with('message', 'Tambah Kategori Berhasil!');
         }
     }
+
+    public function editgallery($id){
+        $gallerydetil = ModelsGallery::findOrFail($id);
+        return view('admin.gallery.edit',compact('gallerydetil'));
+    }
+
+    public function Deletegallery($id){
+        $gallery = ModelsGallery::findOrFail($id);
+        $gallery->delete();
+
+        return redirect()->route('semua-gallery')->with('message', 'Hapus Kategori Berhasil');
+    }
 }

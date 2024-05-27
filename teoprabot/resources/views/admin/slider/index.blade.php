@@ -88,8 +88,8 @@ aria-labelledby="myModalLabel33" aria-hidden="true">
                             <td>{{$slid->name}}</td>
                             <td><img src="{{asset($slid->gambar)}}" style="width: 5em;" alt=""></td>
                             <td>
-                                <a href="{{route('editslider', $slid->id_categories)}}" class="btn btn-warning">Edit</a>
-                                <a href="#" onclick="confirmDelete('{{ $slid->id_categories }}')" data-name="" class="btn btn-danger">Hapus</a>
+                                <a href="{{route('editslider', $slid->id)}}" class="btn btn-warning">Edit</a>
+                                <a href="#" onclick="confirmDelete('{{ $slid->id }}')" data-name="" class="btn btn-danger">Hapus</a>
                             </td>
                         </tr>
                         @endforeach
@@ -130,7 +130,7 @@ aria-labelledby="myModalLabel33" aria-hidden="true">
         .then((willDelete) => {
             if (willDelete) {
                 // Jika pengguna menekan "Hapus", arahkan ke route delete dengan menyertakan ID
-                window.location.href = "{{ route('deletecategori', ':id') }}".replace(':id', categoryId);
+                window.location.href = "{{ route('deleteslider', ':id') }}".replace(':id', categoryId);
                 swal("Poof! Your imaginary file has been deleted!", {
       icon: "success",
     timer: 1500,

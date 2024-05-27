@@ -52,6 +52,7 @@
             </div>
             <div class="col-lg-5">
                 <div class="s_product_text">
+
                     <h3>{{$product_detil->name_products}}</h3>
                     <h2>Rp {{ number_format($product_detil->price, 0, ',', '.') }}</h2>
                     <ul class="list">
@@ -61,17 +62,22 @@
 <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Beatae, recusandae error sapiente numquam, asperiores pariatur architecto magnam temporibus impedit repellendus, dicta amet nesciunt! Quas magni laboriosam quisquam amet numquam dicta!</p>
                     <div class="product_count">
                         <label for="qty">Quantity:</label>
-                        <input type="number" name="qty" id="sst" maxlength="12" value="1" min="1" title="Quantity:" class="input-text qty">
+                        <form action="{{route('addproducttocart')}}" method="POST">
+                            @csrf
+                            <input type="hidden" name="product_id" value="{{ $product_detil->id_products }}">
+                            <input type="hidden" name="price" value="{{ $product_detil->price }}">
+                            <input type="number" name="quantity" id="sst" maxlength="12" max="{{$product_detil->quantity}}" value="1" min="1" title="Quantity:" class="input-text qty">
 
-                    </div>
-                    <div class="card-area d-flex align-items-center">
-                        <a class="primary-btn ad" href="#">Tambah Keranjang</a>
+                        </div>
+                        <div class="card-area d-flex align-items-center">
+                            <button class="primary-btn ad">Tambah Keranjang</button>
+                        </form>
                         <form action="{{ route('addproducttocart') }}" method="POST">
                             @csrf
                             <input type="hidden" name="product_id" value="{{ $product_detil->id_products }}">
                             <input type="hidden" name="price" value="{{ $product_detil->price }}">
                             <input type="hidden" name="quantity" value="1">
-                            <button type="submit" class="primary-btn ad">Beli Sekarang</button>
+                            <button type="submit" class="primary-btn add"><i class="bi bi-cart" style="font-size: 25px;"></i></button>
                         </form>
 
                     </div>
@@ -145,132 +151,26 @@
 				</div>
 
 				<div class="tab-pane fade " id="review" role="tabpanel" aria-labelledby="review-tab">
-					<div class="row">
-						<div class="col-lg-6">
-							<div class="row total_rate">
-								<div class="col-6">
-									<div class="box_total">
-										<h5>Overall</h5>
-										<h4>4.0</h4>
-										<h6>(03 Reviews)</h6>
-									</div>
-								</div>
-								<div class="col-6">
-									<div class="rating_list">
-										<h3>Based on 3 Reviews</h3>
-										<ul class="list">
-											<li><a href="#">5 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">4 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">3 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">2 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-											<li><a href="#">1 Star <i class="fa fa-star"></i><i class="fa fa-star"></i><i class="fa fa-star"></i><i
-													 class="fa fa-star"></i><i class="fa fa-star"></i> 01</a></li>
-										</ul>
-									</div>
-								</div>
-							</div>
-							<div class="review_list">
-								<div class="review_item">
-									<div class="media">
-										<div class="d-flex">
-											<img src="img/product/review-1.png" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
-								</div>
-								<div class="review_item">
-									<div class="media">
-										<div class="d-flex">
-											<img src="img/product/review-2.png" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
-								</div>
-								<div class="review_item">
-									<div class="media">
-										<div class="d-flex">
-											<img src="img/product/review-3.png" alt="">
-										</div>
-										<div class="media-body">
-											<h4>Blake Ruiz</h4>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-											<i class="fa fa-star"></i>
-										</div>
-									</div>
-									<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-										dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-										commodo</p>
-								</div>
-							</div>
-						</div>
-						<div class="col-lg-6">
-							<div class="review_box">
-								<h4>Add a Review</h4>
-								<p>Your Rating:</p>
-								<ul class="list">
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-									<li><a href="#"><i class="fa fa-star"></i></a></li>
-								</ul>
-								<p>Outstanding</p>
-								<form class="row contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
-									<div class="col-md-12">
-										<div class="form-group">
-											<input type="text" class="form-control" id="name" name="name" placeholder="Your Full name" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Your Full name'">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="form-group">
-											<input type="email" class="form-control" id="email" name="email" placeholder="Email Address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email Address'">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="form-group">
-											<input type="text" class="form-control" id="number" name="number" placeholder="Phone Number" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Phone Number'">
-										</div>
-									</div>
-									<div class="col-md-12">
-										<div class="form-group">
-											<textarea class="form-control" name="message" id="message" rows="1" placeholder="Review" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Review'"></textarea></textarea>
-										</div>
-									</div>
-									<div class="col-md-12 text-right">
-										<button type="submit" value="submit" class="primary-btn">Submit Now</button>
-									</div>
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
+                    <h1>Ulasan</h1>
+                    <div style="max-height: 300px; overflow: auto;">
+                        @foreach ($comments as $index => $comment)
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <div class="media">
+                                        <div class="media-body">
+                                            <h5 class="mt-0">{{ $userNames[$index] }} :</h5>
+                                            <p class="comment-text">{{ $comment }}</p>
+                                            @if (isset($createdDates[$index]))
+                                                <p class="comment-date text-muted">{{ $createdDates[$index]->diffForHumans() }}</p>
+                                            @else
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                            </div>
 			</div>
 		</div>
 	</section>

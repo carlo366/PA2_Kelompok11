@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Http\Controllers\Admin\Tradeins as AdminTradeins;
 use App\Http\Controllers\Controller;
 use App\Models\Carts;
 use App\Models\Category;
@@ -161,9 +162,9 @@ public function checkout(Request $request){
     }
     public function getdesa(Request $request)
     {
-        $id_kecamatan = $request->id_kecamatan;
-        $desas = Village::where('district_id', $id_kecamatan)->get();
-        $options = "<option value=''>Pilih Desa</option>";
+            $id_kecamatan = $request->id_kecamatan;
+            $desas = Village::where('district_id', $id_kecamatan)->get();
+            $options = "<option value=''>Pilih Desa</option>";
 
         foreach ($desas as $desa) {
             $options .= "<option value='{$desa->id}'>{$desa->name}</option>";
@@ -181,6 +182,7 @@ public function checkout(Request $request){
         }
 
         $cart_items = Carts::whereIn('id', $checkedItems)->where('user_id', $userid)->get();
+
         // Proses penyimpanan data
         $nomortelp = $request->input('nohp');
         $provinsi = $request->input('provinsi');
@@ -192,8 +194,7 @@ public function checkout(Request $request){
         $zip = $request->input('zip');
         $message = $request->input('message');
         $totalprice = $request->input('totalprice');
-
-
+        $metode = $request->input('metode'); // Mendapatkan metode pembayaran dari request
 
         $productIds = [];
         $productimgs = [];
@@ -201,47 +202,43 @@ public function checkout(Request $request){
         $quantities = [];
         $prices = [];
 
-
         foreach ($cart_items as $item) {
             $productIds[] = $item->product_id;
             $produkk = $item->products->id_products;
-            $produkimage = Images_Products::where('product_id',$produkk)->latest()->first();
+            $produkimage = Images_Products::where('product_id', $produkk)->latest()->first();
             $productimgs[] = $produkimage->image;
-            $produk = $item->products->name_products; // Menggunakan relasi product() yang sudah didefinisikan
+            $produk = $item->products->name_products;
             $productnames[] = $produk;
             $quantities[] = $item->quantity;
             $prices[] = $item->price;
-
         }
 
-
         // Simpan ke database
-
-            // Proses simpan data produk yang dipesan ke tabel orders
-            Order::create([
-                'user_id' => $userid,
-                'totalprice' => $totalprice,
-                'phonenumber' => $nomortelp,
-                'provinsi' => $provinsi,
-                'Kabupaten' => $kabupaten,
-                'kecamatan' => $kecamatan,
-                'desa' => $desa,
-                'alamat' => $alamat,
-                'nama' => $nama,
-                'request' => $message,
-                'zip' => $zip,
-                'product_id' => json_encode($productIds),
-                'product_nama' => json_encode($productnames),
-                'product_img' => json_encode($productimgs),
-                'quantity' => json_encode($quantities),
-                'price' => json_encode($prices),
-                'statuspembayaran' => 'Unpaid', // Default status
-
-            ]);
+        Order::create([
+            'user_id' => $userid,
+            'totalprice' => $totalprice,
+            'phonenumber' => $nomortelp,
+            'provinsi' => $provinsi,
+            'Kabupaten' => $kabupaten,
+            'kecamatan' => $kecamatan,
+            'desa' => $desa,
+            'alamat' => $alamat,
+            'nama' => $nama,
+            'request' => $message,
+            'zip' => $zip,
+            'product_id' => json_encode($productIds),
+            'product_nama' => json_encode($productnames),
+            'product_img' => json_encode($productimgs),
+            'quantity' => json_encode($quantities),
+            'price' => json_encode($prices),
+            'statuspembayaran' => 'Unpaid',
+            'metode' => $metode, // Menyimpan metode pembayaran
+        ]);
 
         return redirect()->route('keranjang')->with('message', 'Berhasil Memesan');
     }
-    public function tradeins(Request $request)
+
+            public function tradeins(Request $request)
     {
         $validatedData = $request->validate([
             'name.*' => 'required|string',
@@ -287,6 +284,55 @@ public function checkout(Request $request){
         }
 
         return redirect()->back()->with('success', 'Data berhasil disimpan.');
+    }
+
+    public function tawarancustom(Request $request)
+    {
+   // Validasi data input
+   $request->validate([
+    'id' => 'required|exists:tradeins,id',
+    'hargadasar' => 'required|numeric|min:0',
+]);
+
+try {
+    // Cari record trade-in berdasarkan ID
+    $tradein = Tradeins::findOrFail($request->id);
+
+    // Update field 'hargadasar'
+    $tradein->hargadasar = $request->hargadasar;
+    $tradein->save();
+
+    // Redirect kembali dengan pesan sukses
+    return redirect()->back()->with('success', 'Tawaran berhasil ditambahkan');
+} catch (\Exception $e) {
+    // Tangani potensi error
+    return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan tawaran');
+}
+    }
+
+    public function setujuu(Request $request)
+    {
+        // Validasi input data
+        $request->validate([
+            'id' => 'required|exists:tradeins,id',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        try {
+            // Cari record trade-in berdasarkan ID
+            $tradein = Tradeins::findOrFail($request->id);
+
+            // Update field 'price' dan 'status'
+            $tradein->price = $request->price;
+            $tradein->status = 'terima';  // Mengubah status menjadi 'terima'
+            $tradein->save();
+
+            // Redirect kembali dengan pesan sukses
+            return redirect()->back()->with('success', 'Tawaran berhasil ditambahkan dan status diubah menjadi terima');
+        } catch (\Exception $e) {
+            // Tangani potensi error
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan tawaran');
+        }
     }
 
 

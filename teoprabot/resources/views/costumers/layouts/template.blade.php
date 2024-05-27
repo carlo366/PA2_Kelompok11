@@ -296,7 +296,7 @@
 @endif
 
                         </div>
-                        <div class="header__cart__price"><button class="btn btn-success jualbeli" style="padding:0.01em 2em;margin:0.5em 0em;" >+ <span  class="text-dark">Perbaiki</span></button></div>
+                        <div class="header__cart__price"><a href="{{route('perbaiki')}}" class="btn btn-success jualbeli" style="padding:0.01em 2em;margin:0.5em 0em;" >+ <span  class="text-dark">Perbaiki</span></a></div>
 
                     </div>
                 </div>
@@ -370,7 +370,7 @@
             </div>
         </div>
     </div>
-    <button class="show-button">+ Jual</button>
+    <a href="{{route('jualcategory')}}" class="show-button">+ Jual</a>
 <!-- Modal Form Login -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-lg-down">

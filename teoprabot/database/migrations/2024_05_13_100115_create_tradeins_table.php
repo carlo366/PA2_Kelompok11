@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('tradeins', function (Blueprint $table) {
-            $table->id();
+            $table->bigIncrements('id'); // Menggunakan bigIncrements yang sesuai dengan unsignedBigInteger
             $table->json('name');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->string('price')->nullable();
             $table->string('hargadasar')->nullable();
-            $table->text('status',['tolak','terima'])->nullable();
+            $table->enum('status', ['tolak', 'terima'])->nullable();
             $table->timestamps();
         });
     }

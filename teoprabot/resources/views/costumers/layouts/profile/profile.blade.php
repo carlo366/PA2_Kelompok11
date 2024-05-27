@@ -1,36 +1,7 @@
 @extends('costumers.layouts.template')
 @section('main-content')
 @section('css')
-<style>
-    .profile-info {
-        display: flex;
-        align-items: center;
-        justify-content: start;
-        gap: 10px;
-    }
-    .profile-info img {
-        width: 60px;
-        height: 60px;
-        border-radius: 50%;
-    }
 
-    .btn-link {
-        text-decoration: underline; /* Garis bawah pada teks */
-        color: blue; /* Warna teks */
-        padding-left: 0; /* Atur jarak kiri tombol */
-      }
-      #file-input {
-          display: none;
-      }
-
-      #file-input-label {
-        font-size: 1em;
-        padding: 5px 10px;
-        border: 1px solid black;
-        border-radius: 4%;
-      }
-      @yield('csss');
-      </style>
 @endsection
 <div class="container mt-5">
     <div class="row">
@@ -42,7 +13,7 @@
             @else
             <img src="{{asset(Auth::user()->user_img)}}" alt="Gambar Profil" class="img-fluid">
             @endif          <div class="user-profile">
-            <h6 class="mb-1">Nama Pengguna</h6>
+            <h6 class="mb-1">{{Auth::user()->name}}</h6>
   <!-- Menggunakan Font Awesome untuk ikon setting -->
   <a href="#" class="btn btn-link text- text-decoration-none">
       <i class="fas fa-cog text-dark me-1"></i > Edit Profil

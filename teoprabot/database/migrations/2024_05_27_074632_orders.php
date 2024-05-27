@@ -20,8 +20,10 @@ return new class extends Migration
             $table->text('product_nama');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
+            $table->unsignedBigInteger('tradeinsid')->nullable(); // Menyesuaikan nama kolom
+            // $table->foreign('tradeinsid')->references('id')->on('tradeins'); // Menggunakan tipe data yang sama
             $table->text('product_img');
-            $table->string('nama',255);
+            $table->string('nama', 255);
             $table->text('phonenumber');
             $table->text('zip');
             $table->text('provinsi');
@@ -33,10 +35,12 @@ return new class extends Migration
             $table->text('quantity');
             $table->text('price');
             $table->text('totalprice');
-            $table->enum('metode',['cod','payment'])->nullable();
-            $table->enum('statuspembayaran',['Unpaid','Paid'])->default('Unpaid');
-            $table->enum('status',['proses','packaging','sedangperjalan','selesai'])->default('proses');
+            $table->dateTime('tanggalantar')->nullable(); // Menggunakan dateTime
+            $table->enum('metode', ['cod', 'payment'])->nullable();
+            $table->enum('statuspembayaran', ['Unpaid', 'Paid'])->nullable();
+            $table->enum('status', ['proses', 'packaging', 'sedangperjalan', 'selesai','terima','tolak'])->default('proses');
             $table->text('komentar')->nullable();
+            $table->text('img_bayar')->nullable();
             $table->timestamps();
         });
     }
@@ -48,6 +52,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('orders');
+        //
     }
 };

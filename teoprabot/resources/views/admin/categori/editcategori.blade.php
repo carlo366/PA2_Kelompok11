@@ -27,13 +27,16 @@
     <section class="section">
         <div class="card">
 
-            <form action="{{route('updatecategory')}}" method="POST">
+            <form action="{{route('updatecategory', ['id' => $category_info->id_categories])}}" method="POST">
                 @csrf
             <div class="card-body">
                 <div class="col-sm-4">
                     <h6>Nama Kategori</h6>
                     <input type="hidden" value="{{$category_info->id_categories}}" name="id_categories">
                     <input class="form-control form-control-lg" type="text" value="{{$category_info->name_categories}}" name="name_categories" placeholder="Nama Kategori">
+                    <img src="{{ asset($category_info->image) }}" alt="" style="max-width: 100%; height: auto;" name="image">
+                    <input type="file" name="image">
+
                 </div>
 
                 <div class="d-flex justify-content-end mt-4">

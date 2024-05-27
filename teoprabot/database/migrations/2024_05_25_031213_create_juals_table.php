@@ -17,21 +17,21 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->json('nameproduct');
+            $table->string('nameproduct');
+            $table->string('kategory');
             $table->string('nama',255);
+            $table->text('phonenumber');
             $table->string('kondisi');
             $table->text('deskripsi');
-            $table->text('phonenumber');
             $table->text('zip');
             $table->text('provinsi');
             $table->text('Kabupaten');
             $table->text('kecamatan');
             $table->text('desa');
             $table->text('alamat');
-            $table->text('penentuprice');
-            $table->text('price');
-            $table->dateTime('tanggalpengambilan');
-            $table->string('status')->default('pending');
+            $table->text('price')->nullable();
+            $table->string('hargadasar');
+            $table->enum('status', ['tolak', 'terima'])->nullable();
             $table->timestamps();
         });
     }

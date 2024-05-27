@@ -8,4 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Reprasi extends Model
 {
     use HasFactory;
+
+    protected $fillable = ['name',
+    'user_id', 'kondisi','nameproduct', 'deskripsi', 'price', 'status'];
+
 }

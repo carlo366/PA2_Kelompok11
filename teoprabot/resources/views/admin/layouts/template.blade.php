@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="{{ asset('admin/css/app.css') }}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Ultra&family=Vina+Sans&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -38,50 +38,50 @@
         <ul class="menu">
 
 
-                <li class='sidebar-title'>Main Menu</li>
+                <li class='sidebar-title text-dark'>Main Menu</li>
 
 
 
-                <li class="sidebar-item active ">
+                <li class="sidebar-item ">
 
-                    <a href="{{route('admindasboard')}}" class='sidebar-link'>
+                    <a href="{{route('admindasboard')}}" class='sidebar-link text-dark'>
                         <i data-feather="home" width="20"></i>
-                        <span>Dashboard</span>
+                        <span class="text-light">Dashboard</span>
                     </a>
 
 
                 </li>
 
-                <li class='sidebar-title'>Produk</li>
+                <li class='sidebar-title text-dark'>Produk</li>
 
 
                 <li class="sidebar-item  ">
 
-                    <a href="{{route('adminallproduk')}}" class='sidebar-link'>
+                    <a href="{{route('adminallproduk')}}" class='sidebar-link text-dark'>
 
-                        <span>Semua Produk</span>
+                        <span class="text-light">Semua Produk</span>
                     </a>
                 </li>
 
-                <li class='sidebar-title'>Categori Produk</li>
+                <li class='sidebar-title text-dark'>Categori Produk</li>
 
 
                 <li class="sidebar-item  ">
 
-                    <a href="{{route('adminallkategori')}}" class='sidebar-link'>
+                    <a href="{{route('adminallkategori')}}" class='sidebar-link text-dark'>
 
-                        <span>Semua Kategori</span>
+                        <span class="text-light">Semua Kategori</span>
                     </a>
                 </li>
 
 
-                <li class='sidebar-title'>Component</li>
+                <li class='sidebar-title text-dark'>Component</li>
 
                 <li class="sidebar-item  has-sub">
 
-                    <a href="#" class='sidebar-link'>
+                    <a href="#" class='sidebar-link text-dark'>
                         <i data-feather="triangle" width="20"></i>
-                        <span>Components</span>
+                        <span class="text-light">Components</span>
                     </a>
 
                     <ul class="submenu ">
@@ -101,38 +101,51 @@
 
                 </li>
 
-                <li class='sidebar-title'>Order</li>
+                <li class='sidebar-title text-dark'>Order</li>
 
 
                 <li class="sidebar-item  ">
 
-                    <a href="{{route('adminallkategori')}}" class='sidebar-link'>
+                    <a href="{{route('semua-pemesanan')}}" class='sidebar-link text-dark'>
 
-                        <span>Semua Order</span>
+                        <span class="text-light">Semua Order</span>
                     </a>
                 </li>
 
 
-                <li class='sidebar-title'>Request Jual</li>
+                <li class='sidebar-title text-dark'>Request Tukar Tambah</li>
 
 
                 <li class="sidebar-item  ">
 
-                    <a href="{{route('adminallkategori')}}" class='sidebar-link'>
+                    <a href="{{route('semua-tradeins')}}" class='sidebar-link text-dark'>
 
-                        <span>Semua Request Jual</span>
+                        <span class="text-light">Semua Request Tukar Tambah</span>
                     </a>
                 </li>
 
 
-                <li class='sidebar-title'>Request Reprasi</li>
+
+                <li class='sidebar-title text-dark'>Request Jual</li>
 
 
                 <li class="sidebar-item  ">
 
-                    <a href="{{route('adminallkategori')}}" class='sidebar-link'>
+                    <a href="{{route('semuajual')}}" class='sidebar-link text-dark'>
 
-                        <span>Semua Request Reprasi</span>
+                        <span class="text-light">Semua Request Jual</span>
+                    </a>
+                </li>
+
+
+                <li class='sidebar-title text-dark'>Request Reprasi</li>
+
+
+                <li class="sidebar-item  ">
+
+                    <a href="{{route('semua-reprasi')}}" class='sidebar-link text-dark'>
+
+                        <span class="text-light">Semua Request Reprasi</span>
                     </a>
                 </li>
 

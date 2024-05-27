@@ -167,25 +167,19 @@
                             </ul>
                             <div class="payment_item">
                                 <div class="radion_btn">
-                                    <input type="radio" id="f-option5" name="selector" />
+                                    <input type="radio" id="f-option5" name="metode" value="cod" required>
                                     <label for="f-option5">COD</label>
                                     <div class="check"></div>
                                 </div>
-                                <p>
-Lorem ipsum dolor sit amet consectetur adipisicing elit. Quis iure incidunt necessitatibus beatae ex maiores similique praesentium, nesciunt illum eveniet at dicta corrupti vero fugit? Doloribus quos enim quod nam.
-                                </p>
+                                <p>Bayar di tempat.</p>
                             </div>
-                            <div class="payment_item active">
+                            <div class="payment_item">
                                 <div class="radion_btn">
-                                    <input type="radio" id="f-option6" name="selector" />
+                                    <input type="radio" id="f-option6" name="metode" value="payment" required>
                                     <label for="f-option6">Payment</label>
-                                    <img src="img/product/single-product/card.jpg" alt="" />
                                     <div class="check"></div>
                                 </div>
-                                <p>
-                                    Please send a check to Store Name, Store Street, Store Town,
-                                    Store State / County, Store Postcode.
-                                </p>
+                                <p>Bayar melalui transfer atau kartu kredit.</p>
                             </div>
                             <div class="creat_account">
                                 {{-- <input type="checkbox" id="f-option4" name="selector" /> --}}

@@ -16,6 +16,8 @@ class tradeins extends Model
         'name' => 'json'
     ];
 
+    protected $tables = 'tradeins';
+
     protected $primaryKey = 'id';
     public function categories()
     {
