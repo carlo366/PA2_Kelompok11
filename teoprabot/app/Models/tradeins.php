@@ -16,6 +16,13 @@ class tradeins extends Model
         'name' => 'json'
     ];
 
+    protected static function booted()
+    {
+        static::creating(function ($tradein) {
+            $tradein->id = mt_rand(10000000, 99999999); // Generate random code
+        });
+    }
+
     protected $tables = 'tradeins';
 
     protected $primaryKey = 'id';

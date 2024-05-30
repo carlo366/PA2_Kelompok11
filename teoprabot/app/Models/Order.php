@@ -87,10 +87,9 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
-
     public function tradein()
     {
-        return $this->belongsTo(ModelsTradeins::class, 'tradein_id'); // Assuming 'tradein_id' is the foreign key column
+        return $this->belongsTo(ModelsTradeins::class, 'tradeinsid');
     }
 
 

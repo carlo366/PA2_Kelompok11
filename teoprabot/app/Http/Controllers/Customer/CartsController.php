@@ -146,7 +146,7 @@ public function checkout(Request $request){
 
 
 
-        return view('costumers.checkout' ,compact('cart_items', 'checkedItems','provinces','tradein_items','productImage'));
+        return view('costumers.checkout' ,compact('cart_items','checkedItemss', 'checkedItems','provinces','tradein_items','productImage'));
     }
     public function getkabupaten(Request $request) {
         $id_provinsi = $request->id_provinsi;

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\tradeinsimage;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -68,7 +69,8 @@ class OrderController extends Controller
 
     public function detilpemesanan($id_orders){
         $detilpemesanan = Order::findOrFail($id_orders);
-        return view('costumers.layouts.pemesanan.detilpemesanan',compact('detilpemesanan'));
+        $productImage = tradeinsimage::latest()->get();
+        return view('costumers.layouts.pemesanan.detilpemesanan',compact('detilpemesanan','productImage'));
     }
     public function uploadBayar(Request $request, $id)
     {

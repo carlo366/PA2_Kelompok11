@@ -24,13 +24,13 @@ class CategoryController extends Controller
         $admin = Auth::user();
 
         $order = Order::get();
-        foreach ($order as $item) {
-            $notif = $admin->notifications()->where('data->id',$item->id)->first();
-            if(!$notif){
-                $save = new OrderNotification($item);
-                $admin->notify($save);
-            }
-        }
+        // foreach ($order as $item) {
+        //     $notif = $admin->notifications()->where('data->id',$item->id)->first();
+        //     if(!$notif){
+        //         $save = new OrderNotification($item);
+        //         $admin->notify($save);
+        //     }
+        // }
         return view('admin.categori.allcategori', compact('categories'));
     }
 
@@ -83,7 +83,7 @@ class CategoryController extends Controller
         $id_categoriess = $request->id_categories;
 
         $request->validate([
-            'name_categories' => 'required|unique:categories,name_categories,' . $id_categoriess,
+            'name_categories' =>'required|string|max:255',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
@@ -92,7 +92,6 @@ class CategoryController extends Controller
         // Update the name
         $category->name_categories = $request->input('name_categories');
 
-        // Handle file upload if a new image is uploaded
         if ($request->hasFile('image')) {
             $image = $request->file('image');
             $image_name = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
@@ -113,7 +112,6 @@ class CategoryController extends Controller
         // Save the updated category
         $category->save();
 
-        dd($category);
         return redirect()->route('adminallkategori')->with('message', 'Category updated successfully!');
     }
 

@@ -58,4 +58,43 @@ class Gallery extends Controller
 
         return redirect()->route('semua-gallery')->with('message', 'Hapus Kategori Berhasil');
     }
+
+
+    public function Updategallery(Request $request)
+    {
+        $id = $request->id;
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $gallery = ModelsGallery::findOrFail($id);
+
+        // Update the name
+        $gallery->name = $request->input('name');
+
+        // Handle file upload if a new image is uploaded
+        if ($request->hasFile('image')) {
+            $image = $request->file('image');
+            $image_name = hexdec(uniqid()) . '.' . $image->getClientOriginalExtension();
+
+            // Move the uploaded image to the specified directory
+            $image->move(public_path('uploads/gallery'), $image_name);
+
+            // Delete the old image if it exists
+            if ($gallery->image && file_exists(public_path($gallery->image))) {
+                unlink(public_path($gallery->image));
+            }
+
+            // Update the image URL in the gallery model
+            $gallery->image = 'uploads/gallery/' . $image_name;
+        }
+
+        // Save the updated gallery
+        $gallery->save();
+
+        return redirect()->route('semua-gallery')->with('message', 'gallery updated successfully!');
+    }
 }
+

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\tradeinsimage;
 use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,8 +19,9 @@ class OrderCOntroller extends Controller
     }
 
     public function detilpemesanan($id){
+        $productImage = tradeinsimage::latest()->get();
         $order = Order::findOrFail($id);
-        return view('admin.order.detilpemesanan',compact('order'));
+        return view('admin.order.detilpemesanan',compact('order','productImage'));
     }
 
 public function approvepem($order_id)
