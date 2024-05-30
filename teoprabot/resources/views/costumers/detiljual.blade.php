@@ -108,14 +108,13 @@
             <div class="table-responsive mb-4">
                 <table class="table table-bdetiljualed">
                     <tbody>
-                        @if ($detiljual == null )
+                        @if ($detiljual->status == null)
                         <tr>
                             <td>Harga Saya</td>
                             <td>Rp {{ number_format($detiljual->hargadasar, 0, ',', '.') }}</td>
                         </tr>
                         <tr>
                             <td>Harga Tawaran</td>
-
                             <td id="hasil_kurang">Rp {{ number_format($detiljual->price, 0, ',', '.') }}@if ($detiljual->price == null)
                                 <span class="text-danger">(*Menunggu Harga Tawaran Admin)</span>
                             @endif</td>

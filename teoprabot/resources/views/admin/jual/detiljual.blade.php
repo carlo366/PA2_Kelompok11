@@ -118,7 +118,7 @@
                             @if ($detiljual->price != null)
                             Rp {{ number_format($detiljual->price, 0, ',', '.') }}
                             @elseif($detiljual->price == null)
-                        <form action="{{ route('tawaran', $detiljual->id) }}" method="POST">
+                        <form action="{{ route('tawaranjualadmin', $detiljual->id) }}" method="POST">
                             @csrf <!-- Ensure CSRF token is included for security -->
                             <input type="number" class="form-control" name="price" min="0" required>
                             <button type="submit" class="btn btn-info me-2 mt-3">Beri Tawaran</button>
