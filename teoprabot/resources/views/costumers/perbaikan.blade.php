@@ -7,7 +7,7 @@
     <ul>
                 <h2 class="mt-5 mb-3">Form Request Perbaikan</h2>
 
-                <form id="formTambah" method="POST" action="{{ route('tradeins') }}" enctype="multipart/form-data">
+                <form id="formTambah" method="POST" action="{{ route('repraibarangs') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="row mb-3">
                         <div class="col-md-6 form-group">
@@ -57,13 +57,13 @@
                           <label for="inputNama" class="form-label">Nama</label>
                           <div id="formContainer">
                               <div class="input-group pb-2">
-                                  <input type="text" class="form-control inputNama" name="name" placeholder="Masukkan nama produk" required>
+                                  <input type="text" class="form-control inputNama" name="nameproduct" placeholder="Masukkan nama produk" required>
                               </div>
                           </div>
                       </div>
                     <div class="mb-3">
                         <label for="inputJenis" class="form-label">Jenis</label>
-                        <select class="form-control" style="width: 100%" id="id_categories" name="id_categories">
+                        <select class="form-control" style="width: 100%" id="id_categories" name="kategory">
                             @foreach ($kategori as $kateg)
                                 <option value="{{ $kateg->id_categories }}">{{ $kateg->name_categories }}</option>
                             @endforeach
@@ -86,6 +86,11 @@
                             <div class="mb-3">
                                 <label for="inputDeskripsi" class="form-label">Deskripsi</label>
                                 <textarea id="summernote"  name="deskripsi" ></textarea>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="inputrequest" class="form-label">Permintaan perbaikan</label>
+                                <textarea id="summernotee"  name="request" ></textarea>
                             </div>
 
 
@@ -116,6 +121,26 @@ $('form').submit(function() {
   $('#summernote').summernote('code', content);
 });
 </script>
+
+<script>
+    $('#summernotee').summernote({
+        placeholder: 'deskripsi',
+      tabsize: 2,
+      height: 400
+});
+  </script>
+<script>
+
+// Ambil konten dari Summernote saat form disubmit
+$('form').submit(function() {
+  var content = $('#summernotee').summernote('code');
+  // Hilangkan tag <p></p> dari konten
+  content = content.replace(/<p>/g, '').replace(/<\/p>/g, '');
+  // Set kembali konten tanpa tag <p></p>
+  $('#summernotee').summernote('code', content);
+});
+</script>
+
 <script>
     document.getElementById('images').addEventListener('change', function(event) {
         const files = event.target.files;

@@ -2,8 +2,7 @@
      $userid = Auth::id();
 // Menghitung jumlah produk di keranjang untuk pengguna yang sedang login
 $totalcart = App\Models\Carts::where('user_id', $userid)->count();
-$totaltred = App\Models\tradeins::where('user_id', $userid)->count();
-// $totalAcceptedTred = App\Models\Tradein::where('user_id', $userid)
+$totaltred = App\Models\tradeins::where('user_id', $userid)->whereNull('status')->count()// $totalAcceptedTred = App\Models\Tradein::where('user_id', $userid)
 //     ->where('status', 'terima') // ganti 'terima' dengan nilai status yang sesuai jika berbeda
 //     ->count();
 @endphp
@@ -111,108 +110,252 @@ $totaltred = App\Models\tradeins::where('user_id', $userid)->count();
 @endif
 <br>
 <div class="table-responsive-custom">
-    <form c654321 action="{{route('checkout')}}">
-    <table class="table">
-        <thead>
-            <tr>
-                <th><input type="checkbox" name="" id="select_all_ids"></th>
-                <th scope="col">Product</th>
-                <th scope="col">Price</th>
-                <th scope="col">Quantity</th>
-                <th scope="col">@Total</th>
-                <th>Aksi</th>
-            </tr>
-        </thead>
-        @php
-        $total = 0;
-        $nomor = 1;
-        @endphp
-        <tbody>
-            @foreach ($carts as $cart)
+    <form action="{{ route('checkout') }}">
+        <!-- Existing cart table here -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th><input type="checkbox" id="select_all_ids"></th>
+                    <th scope="col">Product</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Quantity</th>
+                    <th scope="col">Total</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
             @php
-            $product_id = $cart->products->id_products; // Mengambil ID produk dari item keranjang
-            $images = App\Models\Images_Products::where('product_id', $product_id)->latest()->first();
-        @endphp
-            <tr>
-                <td><input type="checkbox" name="ids[{{$cart->id}}]" class="checkbox_ids" id="" value="{{$cart->id}}"></td>
-                <td>
-                    <div class="media">
-                        <div class="d-flex">
-                            {{-- @foreach ($images as $image) --}}
-                            <a href="{{route('produkdetail',$cart->products)}}"><img src="{{ asset($images->image) }}" alt="" style="max-width: 100px; max-height: 100px;"></a>
-                        {{-- @endforeach --}}
-                           {{ $cart->products->name_products }}
-                        </div>
-                    </div>
-                </td>
-                <td>
-                    <p>Rp {{ number_format($cart->products->price, 0, ',', '.') }}</p>
-                </td>
-                <td>
-                    <div class="quantity-input">
-                        @if(session('confirm'))
-                        <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered"> <!-- Tambahkan class modal-dialog-centered untuk menempatkan modal di tengah -->
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        {{ session('confirm') }}
-                                    </div>
-                                    <div class="modal-footer">
-                                        <a href="{{ route('deletecart', $cart->id) }}" class="btn" style="background-color:#402218;color:white">Ya, Hapus</a>
-                                        <a href="{{ route('keranjang') }}" class="btn btn-secondary">Batal</a>
-                                    </div>
+                $total = 0;
+            @endphp
+
+            @if ($totaltred == 0)
+            <tbody>
+                @foreach ($carts as $cart)
+                    @php
+                        $product_id = $cart->products->id_products;
+                        $images = App\Models\Images_Products::where('product_id', $product_id)->latest()->first();
+                    @endphp
+                    <tr>
+                        <td><input type="checkbox" name="ids[{{ $cart->id }}]" class="checkbox_ids" value="{{ $cart->id }}"></td>
+                        <td>
+                            <div class="media">
+                                <div class="d-flex">
+                                    <a href="{{ route('produkdetail', $cart->products) }}"><img src="{{ asset($images->image) }}" alt="" style="max-width: 100px; max-height: 100px;"></a>
+                                    {{ $cart->products->name_products }}
                                 </div>
                             </div>
+                        </td>
+                        <td><p>Rp {{ number_format($cart->products->price, 0, ',', '.') }}</p></td>
+                        <td>
+                            <div class="quantity-input">
+                                @if (session('confirm'))
+                                    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">{{ session('confirm') }}</div>
+                                                <div class="modal-footer">
+                                                    <a href="{{ route('deletecart', $cart->id) }}" class="btn" style="background-color:#402218;color:white">Ya, Hapus</a>
+                                                    <a href="{{ route('keranjang') }}" class="btn btn-secondary">Batal</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                <a href="{{ route('products.decrement', $cart->id) }}" class="btn btn-secondary dec" onclick="decrement()" style="background-color:#402218;color:white">-</a>
+                                <input type="text" id="quantityInput" value="{{ $cart->quantity }}" onchange="updateQuantity({{ $cart->id }}, this)">
+                                <a href="{{ route('increment', $cart->id) }}" class="btn btn-secondary in" onclick="increment()" style="background-color:#402218;color:white">+</a>
+                            </div>
+                        </td>
+                        @php
+                            $total_item = $cart->quantity * $cart->products->price;
+                            $total += $total_item;
+                        @endphp
+                        <td class="item_price" data-price="{{ $total_item }}">{{ 'Rp ' . number_format($total_item) }}</td>
+                        <td><a href="{{ route('deletecart', $cart->id) }}" class="text-dark">delete</a></td>
+                    </tr>
+                @endforeach
+
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><h5>Subtotal</h5></td>
+                    <td id="total_price">{{ 'Rp ' . number_format($total) }}</td>
+                    <td>
+                        <div class="checkout_btn_inner">
+                            <button type="submit" class="main_btn btn btn-success" style="background-color:#402218;color:white">Checkout</button>
                         </div>
-@endif
-                        <a href="{{route('products.decrement',$cart->id)}}" class="btn btn-secondar dec" onclick="decrement()" style="background-color:#402218;color:white">-</a>
-                        <input type="text" id="quantityInput" value="{{ $cart->quantity }}" onchange="updateQuantity({{ $cart->id }}, this)">
-                        <a href="{{route('increment',$cart->id)}}" class="btn btn-secondary in" onclick="increment()" style="background-color:#402218;color:white">+</a>
-                    </div>
-                </td>
-                @php
-                $total = $cart->quantity * $cart->price
-                @endphp
-                <td class="item_price" data-price="{{ $total }}">{{'Rp '.number_format($total)}}</td>
-                <td><a href="{{route('deletecart',$cart->id)}}" class="text-dark" >delete</a></td>
-            </tr>
-            @php
-            $total = $total + $cart->price;
-            @endphp
-            @endforeach
+                    </td>
+                </tr>
+            </tbody>
+            @else
+            <tbody>
+                @foreach ($carts as $cart)
+                    @php
+                        $product_id = $cart->products->id_products;
+                        $images = App\Models\Images_Products::where('product_id', $product_id)->latest()->first();
+                    @endphp
+                    <tr>
+                        <td><input type="checkbox" name="ids[{{ $cart->id }}]" class="checkbox_ids" value="{{ $cart->id }}"></td>
+                        <td>
+                            <div class="media">
+                                <div class="d-flex">
+                                    <a href="{{ route('produkdetail', $cart->products) }}"><img src="{{ asset($images->image) }}" alt="" style="max-width: 100px; max-height: 100px;"></a>
+                                    {{ $cart->products->name_products }}
+                                </div>
+                            </div>
+                        </td>
+                        <td><p>Rp {{ number_format($cart->products->price, 0, ',', '.') }}</p></td>
+                        <td>
+                            <div class="quantity-input">
+                                @if (session('confirm'))
+                                    <div class="modal fade" id="confirmDeleteModal" tabindex="-1" aria-labelledby="confirmDeleteModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog modal-dialog-centered">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="confirmDeleteModalLabel">Konfirmasi Penghapusan</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">{{ session('confirm') }}</div>
+                                                <div class="modal-footer">
+                                                    <a href="{{ route('deletecart', $cart->id) }}" class="btn" style="background-color:#402218;color:white">Ya, Hapus</a>
+                                                    <a href="{{ route('keranjang') }}" class="btn btn-secondary">Batal</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endif
+                                <a href="{{ route('products.decrement', $cart->id) }}" class="btn btn-secondary dec" onclick="decrement()" style="background-color:#402218;color:white">-</a>
+                                <input type="text" id="quantityInput" value="{{ $cart->quantity }}" onchange="updateQuantity({{ $cart->id }}, this)">
+                                <a href="{{ route('increment', $cart->id) }}" class="btn btn-secondary in" onclick="increment()" style="background-color:#402218;color:white">+</a>
+                            </div>
+                        </td>
+                        @php
+                            $total_item = $cart->quantity * $cart->products->price;
+                            $total += $total_item;
+                        @endphp
+                        <td class="item_price" data-price="{{ $total_item }}">{{ 'Rp ' . number_format($total_item) }}</td>
+                        <td><a href="{{ route('deletecart', $cart->id) }}" class="text-dark">delete</a></td>
+                    </tr>
+                @endforeach
 
-            <tr>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td>
-                    <h5>Subtotal</h5>
-                </td>
-                <td id="total_price">{{'Rp '.number_format(0)}}</td>
-                <td>
-                    <div class="checkout_btn_inner">
-                        <button type="submit" class="main_btn btn btn-success" href="#" style="background-color:#402218;color:white">Checkout</button>
-                    </div>
-                </td>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><h5>Subtotal</h5></td>
+                    <td id="total_price">{{ 'Rp ' . number_format($total) }}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+            @endif
+        </table>
+        @foreach ($tradein as $tr)
+        @if($tr->status == 'terima')
+        <h4>Barang tukar tambah Anda</h4>
+        <p class="text-danger">*masukkin barang kedalam keranjang untuk melakukan tukar tambah</p>
 
-            </tr>
-        </tbody>
-    </table>
+        <table class="table">
+            <tbody>
+                @foreach ($tradein as $tr)
+                <tr>
+                    <td><input type="checkbox" name="idt[{{ $tr->id }}]" class="checkbox_idt" value="{{ $tr->id }}"></td>
+                    <td>
+                        @php
+                            $decodedArray = json_decode($tr->name, true);
+                        @endphp
+                        <ul class="list-group">
+                            @if (is_array($decodedArray))
+                                @foreach ($decodedArray as $item)
+                                    <li class="d-flex align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            @foreach ($productImage->take(1) as $productIMG)
+                                                <div class="me-3">
+                                                    <img src="{{ asset($productIMG->image) }}" class="img-thumbnail" alt="Img" style="height: 100px; object-fit: cover;">
+                                                </div>
+                                            @endforeach
+                                            <span>{{ $item }}</span>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            @else
+                                <li class="list-group-item">Tidak ada data barang yang valid.</li>
+                            @endif
+                        </ul>
+                    </td>
+                    <td></td>
+                    <td>Rp {{ number_format($tr->price, 0, ',', '.') }}</td>
+                    <td></td>
+                    <td><a href="#" onclick="confirmDelete('{{ $tr->id }}')" class="btn btn-danger">Hapus</a></td>
+                </tr>
+                @endforeach
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td>
+                        <div class="checkout_btn_inner">
+                            <button type="submit" class="main_btn btn btn-success" style="background-color:#402218;color:white">Checkout</button>
+                        </div>
+                    </td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+
+        @endif
+        @endforeach
     </form>
+</div>
 
 
 
     @if ($totaltred > 0)
-    <div class="container mt-5">
-        <h2 class=" mb-4">Tukar Tambah</h2>
+    @foreach ($tradein as $tr)
 
-        <div class="card mb-4">
-            <div class="card-body">
-                @foreach ($tradein as $tr)
+@if ($tr->status != 'terima')
+<div class="container mt-5">
+    <h2 class=" mb-4">Tukar Tambah</h2>
+
+    <div class="card mb-4">
+        <div class="card-body">
+                        @endif
                 @if ($tr->status == null)
                 <h5 class="card-title">Status: <span class="badge bg-warning text-dark">Proses</span></h5>
                 @elseif($tr->status == 'tolak')
@@ -222,8 +365,6 @@ $totaltred = App\Models\tradeins::where('user_id', $userid)->count();
                         // Mendekode string JSON menjadi array PHP
                         $decodedArray = json_decode($tr->name, true);
                         @endphp
-
-
 @if ($tr->status == null)
 
 <div class="mb-4">
@@ -426,8 +567,51 @@ $totaltred = App\Models\tradeins::where('user_id', $userid)->count();
                 <p id="toggleTableBtn" class="btn">Tukar Tambah</p>
                 <button type="button" style="border: none; padding-bottom:13px" data-bs-toggle="popover" data-bs-content="Masukkan Barang Terlebih Dahulu"> <i class="bi bi-info-circle-fill text-danger" style="padding-bottom: 12px"></i></button>
                   </div>
-            <div class="alert alert-info hidden"  id="tableContainer" role="alert">
-                <h4 class="alert-heading text-center">Masukkan Barang Ke Keranjang</h4>
+            <div class="hidden"  id="tableContainer" role="alert">
+                <div class="alert alert-info ">
+                    <h4 class="alert-heading text-center">Masukkan Barang Ke Keranjang</h4>
+                </div>
+                @if ($totaltred > 0 )
+                <h4>Barang tukar tambah Anda</h4>
+                <p class="text-danger">*tandai jika ingin tukar tambah</p>
+
+                <table class="table">
+                    <tbody>
+                        @foreach ($tradein as $tr)
+                        <tr>
+                            <td></td>
+                            <td>
+                                @php
+                                    $decodedArray = json_decode($tr->name, true);
+                                @endphp
+                                <ul class="list-group">
+                                    @if (is_array($decodedArray))
+                                        @foreach ($decodedArray as $item)
+                                            <li class="d-flex align-items-center">
+                                                <div class="d-flex align-items-center">
+                                                    @foreach ($productImage->take(1) as $productIMG)
+                                                        <div class="me-3">
+                                                            <img src="{{ asset($productIMG->image) }}" class="img-thumbnail" alt="Img" style="height: 100px; object-fit: cover;">
+                                                        </div>
+                                                    @endforeach
+                                                    <span>{{ $item }}</span>
+                                                </div>
+                                            </li>
+                                        @endforeach
+                                    @else
+                                        <li class="list-group-item">Tidak ada data barang yang valid.</li>
+                                    @endif
+                                </ul>
+                            </td>
+                            <td></td>
+                            <td>Rp {{ number_format($tr->price, 0, ',', '.') }}</td>
+                            <td></td>
+                            <td><a href="#" onclick="confirmDelete('{{ $tr->id }}')" class="btn btn-danger">Hapus</a></td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+                @endif
             </div>
         </div>
               @endif

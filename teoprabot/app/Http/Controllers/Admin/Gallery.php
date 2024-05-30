@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Gallery as ModelsGallery;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class Gallery extends Controller
 {
@@ -16,6 +17,7 @@ class Gallery extends Controller
 
     public function storeGallery(Request $request)
     {
+        $user_id = Auth::id();
         // Validate the request
         $request->validate([
             'name' => 'required|unique:categories,name_categories|regex:/^[A-Z][a-zA-Z\s]*$/',
@@ -35,6 +37,7 @@ class Gallery extends Controller
 
             // Insert the new gallery into the database
             ModelsGallery::insert([
+                'user_id' => $user_id,
                 'name' => $request->name,
                 'image' => $image_url
             ]);

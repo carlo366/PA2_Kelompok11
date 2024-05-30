@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-            $table->json('nameproduct');
+            $table->string('nameproduct');
             $table->string('nama',255);
             $table->string('kondisi');
             $table->string('kategory');
@@ -31,8 +31,7 @@ return new class extends Migration
             $table->text('alamat');
             $table->text('price')->nullable();
             $table->text('request');
-            $table->string('status')->default('pending');
-            $table->text('customer_feedback')->nullable();
+            $table->enum('status', ['tolak', 'terima'])->nullable();
             $table->timestamps();
         });
     }

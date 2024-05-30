@@ -33,6 +33,7 @@ return new class extends Migration
             $table->text('request');
             $table->text('desa');
             $table->text('quantity');
+            $table->text('ongkir')->nullable();
             $table->text('price');
             $table->text('totalprice');
             $table->dateTime('tanggalantar')->nullable(); // Menggunakan dateTime

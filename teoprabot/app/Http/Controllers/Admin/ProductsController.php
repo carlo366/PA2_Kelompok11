@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Images_Products;
 use App\Models\Products;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductsController extends Controller
 {
@@ -22,6 +23,7 @@ class ProductsController extends Controller
     return view('admin.produk.imageproduk.semuagambar',compact('product','productImage'));
   }
   public function StoreGambar(Request $request, $id_products){
+    $user_id = Auth::id();
     $request->validate([
         'images.*'=> 'required|image|mimes:png,jpg,jpeg,webp',
     ]);
@@ -35,11 +37,11 @@ class ProductsController extends Controller
             $path = "uploads/products/";
             $file->move($path, $filename);
             $imageData[] = [
+                'user_id' => $user_id,
                 'product_id' => $id_products,
                 'image' => $path.$filename,
             ];
         }
-
         // Simpan data gambar ke database
         Images_Products::insert($imageData);
 
@@ -101,6 +103,8 @@ public function Updateproduk(Request $request){
 }
   public function StoreProduct(Request $request)
   {
+    $user_id = Auth::id();
+
       // Validasi inputan
       $request->validate([
           'name_products' => 'required|string|max:255',
@@ -115,6 +119,7 @@ public function Updateproduk(Request $request){
 
       // Simpan data produk ke dalam database
       Products::create([
+        'user_id' => $user_id,
           'name_products' => $request->name_products,
           'product_category_id' => $request->id_categories,
           'description_products' => $request->description_products,

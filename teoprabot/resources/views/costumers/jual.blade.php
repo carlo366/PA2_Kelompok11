@@ -65,12 +65,12 @@
             </button>
             <h2 class="form-title">Request Jual Barang</h2>
         </div>
-<form action="{{ route('jualbarang') }}" method="POST" enctype="multipart/form-data">
+<form action="{{ route('jualbarangs') }}" method="POST" enctype="multipart/form-data">
     @csrf
         <div class="form-category">
             <span><strong>Kategori Terpilih:</strong></span>
             @if ($selectedCategory)
-            <input type="text" style="border: none;max-width:100%;width:3em;" value="{{ $selectedCategory->name_categories }}" name="Kategory" readonly>
+            <input type="text" style="border: none;max-width:100%;width:3em;" value="{{ $selectedCategory->name_categories }}" name="kategory" readonly>
             @else
             <span>Belum ada kategori yang dipilih</span>
             @endif
@@ -150,7 +150,7 @@
 
             <div class="mb-3">
                 <label for="inputHargaAwal" class="form-label">Harga Dasar</label>
-                <input type="number" class="form-control" placeholder="Harga" name="penentuprice" id="inputHargaAwal">
+                <input type="number" class="form-control" placeholder="Harga" name="hargadasar" id="inputHargaAwal">
             </div>
 
             <button type="submit" class="btn btn-submit">Jual</button>

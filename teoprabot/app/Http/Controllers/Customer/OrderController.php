@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
@@ -126,16 +127,21 @@ public function updateTanggalAntar(Request $request, $id_orders)
     return redirect()->back()->with('success', 'Tanggal antar berhasil ditambahkan.');
 }
 
-public function diterima(Request $request, $id){
-       // Find the order record
-       $order = Order::findOrFail($id);
+public function diterima(Request $request, $id)
+{
+    // Find the order record
+    $order = Order::findOrFail($id);
 
-       // Delete the image from storage
-       Storage::delete($order->status);
+    // Delete the image from storage
+    Storage::delete($order->status);
 
-       // Update the order record with a null value for the image
-       $order->status = 'terima';
-       $order->save();
+    // Update the order record with a null value for the image
+    $order->status = 'terima';
+
+    // Set tanggalsampai to current date and time
+    $order->tanggalsampai = Carbon::now();
+
+    $order->save();
 }
 
 public function beriUlasan(Request $request, $id)

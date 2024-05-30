@@ -12,7 +12,6 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-lite.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Ultra&family=Vina+Sans&display=swap" rel="stylesheet">
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <link rel="shortcut icon" href="{{asset('admin/images/favicon.svg')}}" type="image/x-icon">
         @stack('css')
@@ -94,7 +93,7 @@
                         </li>
 
                         <li>
-                            <a href="{{route('semua-slider')}}">Statistik</a>
+                            <a href="{{route('chart')}}">Statistik</a>
                         </li>
 
                     </ul>
@@ -220,8 +219,12 @@
                                 <a class="dropdown-item" href="#"><i data-feather="user"></i> Account</a>
                                 <a class="dropdown-item" href="#"><i data-feather="settings"></i> Settings</a>
                                 <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href=""><i data-feather="log-out"></i> Logout</a>
-                            </div>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                <button class="dropdown-item me-4">
+                                  <i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </button>
+                                </form>                            </div>
                         </li>
                     </ul>
                 </div>

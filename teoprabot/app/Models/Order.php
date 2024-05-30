@@ -2,12 +2,16 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Admin\Tradeins;
+use App\Models\tradeins as ModelsTradeins;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
 
 class Order extends Model
 {
-    use HasFactory;
+    use HasFactory,Notifiable;
 
     protected $fillable = [
         'product_id',
@@ -30,6 +34,8 @@ class Order extends Model
         'komentar',
         'kodeorder',
         'metode',
+        'tradeinsid',
+        'tanggalsampai',
         'status',
         'price',
 
@@ -82,4 +88,50 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function tradein()
+    {
+        return $this->belongsTo(ModelsTradeins::class, 'tradein_id'); // Assuming 'tradein_id' is the foreign key column
+    }
+
+
+    	/**
+	 * @return mixed
+	 */
+	public function getFillable() {
+		return $this->fillable;
+	}
+
+	/**
+	 * @param mixed $fillable
+	 * @return self
+	 */
+	public function setFillable($fillable): self {
+		$this->fillable = $fillable;
+		return $this;
+	}
+
+    public static function totalPriceByMonth($selectedYear)
+    {     $months = range(1, 12);
+
+        $orderData = self::select(
+            DB::raw('MONTH(tanggalsampai) as month'),
+            DB::raw('SUM(totalprice) as total_price')
+        )
+        ->whereYear('tanggalsampai', $selectedYear)
+        ->groupBy(DB::raw('MONTH(tanggalsampai)'))
+        ->orderBy(DB::raw('MONTH(tanggalsampai)'))
+        ->get()
+        ->keyBy('month')
+        ->toArray();
+
+        $result = [];
+        foreach ($months as $month) {
+            $result[] = [
+                'month' => $month,
+                'total_price' => isset($orderData[$month]) ? $orderData[$month]['total_price'] : 0
+            ];
+        }
+
+        return $result;
+    }
 }

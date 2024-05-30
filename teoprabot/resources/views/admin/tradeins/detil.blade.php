@@ -147,7 +147,35 @@
                     <input type="hidden" name="price" value="{{ $trade->hargadasar }}">
                     <button type="submit" class="btn btn-primary">Setuju Harga Customer</button>
                 </form>
+
                 @else
+
+                <a href="#" class="btn btn-secondary mb-2" data-bs-toggle="modal" data-bs-target="#tawarModal">Tawar lagi</a>
+                <div class="modal fade" id="tawarModal" tabindex="-1" aria-labelledby="tawarModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="tawarModalLabel">Masukkan Tawaran Baru</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="tawarForm" action="{{ route('tawarantrade') }}" method="POST">
+                                    @csrf
+                                    <div class="mb-3">
+                                        <input type="hidden" name="id" value="{{ $trade->id }}">
+                                        <label for="price" class="form-label">Harga Tawaran</label>
+                                        <input type="number" class="form-control" name="price" id="price" min="0" required>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                        <button type="submit" class="btn btn-primary">Tawar</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <form action="{{ route('setujunoprice', $trade->id) }}" method="POST">
                     @csrf <!-- Include CSRF token for security -->
                     <input type="hidden" name="price" value="{{ $trade->hargadasar }}">

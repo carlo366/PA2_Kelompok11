@@ -22,7 +22,7 @@ return new class extends Migration
             $table->text('deskripsi');
             $table->string('price')->nullable();
             $table->string('hargadasar')->nullable();
-            $table->enum('status', ['tolak', 'terima'])->nullable();
+            $table->enum('status', ['tolak', 'terima','selesai'])->nullable();
             $table->timestamps();
         });
     }

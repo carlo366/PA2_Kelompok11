@@ -81,6 +81,9 @@
                                 </tr>
                             </thead>
                             <tbody>
+                                @php
+    $grandTotal = 0;
+@endphp
                                 @foreach (json_decode($detilpemesanan->product_id) as $key => $productId)
                                     <tr>
                                         <td>{{ $productId }}</td>
@@ -89,11 +92,37 @@
                                         <td>{{ json_decode($detilpemesanan->quantity)[$key] }}</td>
                                         <td>Rp {{ number_format(json_decode($detilpemesanan->price)[$key], 0, ',', '.') }}</td>
                                     </tr>
+                                    <tr>
+                                        @if(isset($tradeinsid) && $tradeinsid)
+                                    <tr>
+                                        <td>tukar tambah</td>
+                                        <td>lemari</td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                    @endif
+                                    @php
+                                    $quantity = json_decode($detilpemesanan->quantity)[$key];
+                                    $price = json_decode($detilpemesanan->price)[$key];
+                                    $total = $quantity * $price;
+                                    $grandTotal += $total;
+                                    @endphp
                                 @endforeach
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td>Ongkir</td>
+                                    <td colspan="2"><span class="last">{{ 'Rp '.number_format(($detilpemesanan->totalprice - $grandTotal), 0, ',', '.') }}</span></td>
+                                    {{-- <p>{{($detilpemesanan->totalprice - $detilpemesanan->price)[$key])}}</p> --}}
+
+                                </tr>
                             </tbody>
                         </table>
+                        <p class="text-end">Total Price: Rp {{ number_format($detilpemesanan->totalprice, 0, ',', '.') }}</p>
+
                     </div>
-                    <p class="text-end">Total Price: Rp {{ number_format($detilpemesanan->totalprice, 0, ',', '.') }}</p>
                 </div>
             </div>
         </div>

@@ -45,12 +45,8 @@
                                            oninput="this.value = this.value.replace(/\D/g, '').substring(0, 13);">
                                 </div>
 
+
                             </div>
-
-
-
-
-
 
                             <div class="col-md-12 form-group" >
                                 <div class="custom-select-wrapper">
@@ -61,6 +57,8 @@
                                     </select>
                                 </div>
                             </div>
+
+
 
 
 
@@ -91,6 +89,7 @@
                                     </select>
                                 </div>
                             </div>
+
 
 
 
@@ -154,17 +153,103 @@
                                     </a>
                                 </li>
                                 <li>
+
+                                    @foreach ($tradein_items as $item)
                                     <a href="#">Tukar Tambah
-                                        <span>Tidak ada</span>
+
+                                        @if(in_array($item->id, $checkedItems))
+                                        - Item ini tercentang
+                                        @else
+                                        <span>Ada</span>
+                                        @endif
                                     </a>
+
+
                                 </li>
+                                <li>   <tr>
+                                    @php
+                                    // Decode the JSON string into a PHP array
+                                    $decodedArray = json_decode($item->name, true);
+                                @endphp
+                                 <input type="checkbox" name="idt[]" style="display:none;" value="{{ $item->id }}" {{ in_array($item->id, $checkedItems) ? 'checked' : '' }}checked>
+                                 <input type="hidden" value="{{$item->id}}" name="tradeinsid">
+                                 @if (is_array($decodedArray))
+                                 @foreach ($decodedArray as $nameItem)
+                                     <li class="d-flex align-items-center">
+                                         <div class="d-flex align-items-center">
+                                             @foreach ($productImage->take(1) as $productIMG)
+                                                 <div class="me-3">
+                                                     <img src="{{ asset($productIMG->image) }}" class="img-thumbnail" alt="Img" style="height: 50px; object-fit: cover;">
+                                                 </div>
+                                             @endforeach
+                                             <span>{{ $nameItem }}</span>
+                                            </div>
+                                        </li>
+                                        @endforeach
+
+                                        <li>
+                                            <a href="#">Harga
+                                                <input type="hidden" name="tradeinsid" value=" {{$item->id}}">
+                                                <span>Rp {{ number_format($item->price, 0, ',', '.') }}</span>
+                                            </a>
+                                        </li>
+                             @endif
+                                </tr>
+                                @endforeach</li>
                                 <li>
+                                    @if(in_array($item->id, $checkedItems))
                                     <a href="#">Total
                                         <span>{{ 'Rp '.number_format($total, 0, ',', '.') }} </span>
-                                        <input type="hidden" name="totalprice" value="{{$total}} ">
+                                        {{-- <input type="hidden" name="totalprice" value="{{$total}} "> --}}
                                     </a>
+                                    @else
+                                    <a href="#">
+                                        <del>{{ 'Rp '.number_format($total, 0, ',', '.') }} </del>
+                                        {{-- <input type="hidden" name="totalprice" value="{{$total}} "> --}}
+                                    </a>
+                                    @endif
+
                                 </li>
+                                <li>
+                                    @if(in_array($item->id, $checkedItems))
+                                    @else
+                                    <a href="#">Hasil
+                                    <span>{{ 'Rp '.number_format($total - $item->price, 0, ',', '.') }}</span>
+                                    {{-- <input type="hidden" value="{{$total - $item->price}}" name="totalprice"> --}}
+                                    </a>
+                                    @endif
+                                </li>
+
+                                <li>
+                                    <a href="#">ONGKIR
+                                        <span><input type="text" style="border: none;background-color:transparent;text-align:right;" class="form-control" id="ongkir" name="ongkir" readonly></span>
+                                    </a></li>
+
+                                    <li>
+                                        @if(in_array($item->id, $checkedItems))
+                                       <a href="">Harga Total <span>
+                                            <input type="text" class="form-control" id="total-harga" name="" style="border: none;background-color:transparent;text-align:right;" readonly>
+                                            <input type="hidden" id="hidden-total-harga" name="totalprice">
+                                        </span></a>
+                                        @else
+                                        <div>
+                                            <span id="total-tukar-tambah-text"></span>
+                                            <input type="hidden" id="hidden-total-tukar-tambah" name="totalprice">
+                                            {{-- <input type="text" class="form-control" id="total-tukar-tambah-input"   readonly> --}}
+                                        </div>
+
+
+    @endif
+
+                                    </li>
                             </ul>
+
+                            <ul>
+
+                            </ul>
+                            <br><br>
+
+
                             <div class="payment_item">
                                 <div class="radion_btn">
                                     <input type="radio" id="f-option5" name="metode" value="cod" required>
@@ -173,6 +258,7 @@
                                 </div>
                                 <p>Bayar di tempat.</p>
                             </div>
+                            @if(in_array($item->id, $checkedItems))
                             <div class="payment_item">
                                 <div class="radion_btn">
                                     <input type="radio" id="f-option6" name="metode" value="payment" required>
@@ -181,6 +267,7 @@
                                 </div>
                                 <p>Bayar melalui transfer atau kartu kredit.</p>
                             </div>
+                            @endif
                             <div class="creat_account">
                                 {{-- <input type="checkbox" id="f-option4" name="selector" /> --}}
                                 {{-- <label for="f-option4">I’ve read and accept the </label> --}}
@@ -199,12 +286,32 @@
 @endsection
 @section('js')
 <script>
-  $(function () {
+ $(function () {
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         }
     });
+
+    function updateOngkir() {
+    let selectedOption = $('#kabupaten option:selected');
+    let ongkir = selectedOption.data('ongkir') || 0;
+    let hargaItem = parseFloat("{{ $total }}"); // Harga item dari variabel PHP $item
+    let totalHarga = hargaItem + ongkir;
+    let totalTukarTambah = parseFloat("{{ $total - $item->price }}") + ongkir;
+
+    // Tampilkan total harga dan total tukar tambah dalam format mata uang
+    $('#ongkir').val(ongkir.toLocaleString('en-US', {maximumFractionDigits: 0}));
+    $('#total-harga').val(totalHarga.toLocaleString('en-US', {maximumFractionDigits: 0}));
+    $('#total-tukar-tambah-text').text('Total tukar tambah: Rp ' + totalTukarTambah.toLocaleString('en-US', {maximumFractionDigits: 0}));
+    $('#total-tukar-tambah-input').val(totalTukarTambah.toLocaleString('en-US', {maximumFractionDigits: 0}));
+
+    // Update nilai input yang hidden untuk disimpan di database
+    $('#hidden-total-harga').val(totalHarga);
+    $('#hidden-total-tukar-tambah').val(totalTukarTambah);
+}
+
+
 
     $('#provinsi').on('change', function () {
         let id_provinsi = $(this).val();
@@ -226,6 +333,8 @@
     });
 
     $('#kabupaten').on('change', function () {
+        updateOngkir();
+
         let id_kabupaten = $(this).val();
 
         $.ajax({
@@ -235,7 +344,7 @@
             cache: false,
             success: function (data) {
                 $('#kecamatan').html(data);
-                $('#desa').html('');
+                $('#desa').html('<option value="">Pilih Desa</option>');
             },
             error: function (data) {
                 console.log('error', data);

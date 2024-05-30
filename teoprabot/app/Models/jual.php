@@ -23,10 +23,8 @@ class jual extends Model
         'kecamatan',
         'desa',
         'alamat',
-        'penentuprice',
         'price',
         'hargadasar',
-        'tanggalpengambilan',
         'status'
     ];
 
@@ -64,4 +62,12 @@ class jual extends Model
         return $this->belongsTo(Village::class, 'desa');
     }
 
+    public function jualimages()
+    {
+        return $this->hasMany(jual_image::class, 'jualid');
+    }
+
+    public function kategorys(){
+        return $this->belongsTo(Category::class, 'id_categories');
+    }
 }

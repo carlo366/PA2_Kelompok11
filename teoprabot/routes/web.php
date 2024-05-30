@@ -58,7 +58,6 @@ use App\Models\tradeins;
         Route::post('/update-quantity','updateQuantity')->name('updateQuantity');
         Route::get('/checkout','checkout')->name('checkout');
         Route::get('/checkout','Checkout')->name('checkout');
-        // Route::post('/get-regencies','getRegencies')->name('getRegencies');
         Route::post('/getkabupaten','getkabupaten')->name('getkabupaten');
         Route::post('/getkecamatan','getkecamatan')->name('getkecamatan');
         Route::post('/getdesa','getdesa')->name('getdesa');
@@ -83,10 +82,12 @@ use App\Models\tradeins;
         Route::get('customer/order/detil-pemesanan/{id}','detilpemesanan')->name('detilpemesanan');
         Route::post('/customer/order/bayar/{id}','uploadbayar')->name('uploadbayar');
         Route::get('/payment/{id}/delete', 'delete')->name('deletePayment');
+        Route::get('customer/order/hapuspemesanan/{id}', 'hapuspemesanan')->name('hapuspemesanan');
         Route::get('admin/order/mengirim','mengirim')->name('mengirim');
         Route::get('customer/order/diterima/{id}','diterima')->name('diterima');
         Route::post('/beri-ulasan/{id}', 'beriUlasan')->name('beri.ulasan');
         Route::get('customer/order/jadwal','jadwal')->name('jadwal');
+        Route::get('customer/order/history/{id}', 'history')->name('history');
         Route::put('admin/orders/{id_orders}/tanggalantar', 'updateTanggalAntar')->name('updateTanggalAntar');
 
         // Route::get('/akun/profile/pengaturanpassword','profilpassword')->name('profilpassword');
@@ -99,7 +100,14 @@ use App\Models\tradeins;
     Route::post('/getkabupatens', 'getkabupatens')->name('getkabupatens');
     Route::post('/getkecamatans', 'getkecamatans')->name('getkecamatans');
     Route::post('/getdesas', 'getdesas')->name('getdesas');
-    Route::post('/customer/jualbarang','jualbarang')->name('jualbarang');
+    Route::post('/customer/jualbarang','jualbarangs')->name('jualbarangs');
+    Route::get('/customer/semuajual','semuajual')->name('indexjual');
+    Route::get('/customer/detil-jual/{id}','DetilJual')->name('jual.show');
+
+    Route::get('delete/jual/{id}','delete')->name('deletejual');
+    Route::post('customer/tawaranjual','tawaran')->name('tawaranjual');
+    Route::post('customer/tawaranjual/approve','setujuu')->name('setujujual');
+
       });
 
       Route::controller(reprasi::class)->group(function(){
@@ -107,6 +115,10 @@ use App\Models\tradeins;
         Route::post('/getkabupatenss', 'getkabupatenss')->name('getkabupatenss');
         Route::post('/getkecamatanss', 'getkecamatanss')->name('getkecamatanss');
         Route::post('/getdesass', 'getdesass')->name('getdesass');
+        Route::post('/customer/reprasibarang','reprasibarang')->name('repraibarangs');
+        Route::get('/customer/semuareprasi','semuareprasi')->name('indexreprasi');
+        Route::get('/customer/detil-reprasi/{id}','Detilreprasi')->name('reprasi.show');
+
       });
 
 
@@ -115,7 +127,7 @@ use App\Models\tradeins;
 
 
 
-// Route::middleware(['auth','role:admin','verified'])->group(function () {
+Route::middleware(['auth','role:admin','verified'])->group(function () {
     Route::get('/dasboard-admin',function () {
 
         return view('admin.dasboard');
@@ -132,6 +144,7 @@ use App\Models\tradeins;
 
 
     });
+
 
     Route::controller(ProductsController::class)->group(function(){
         Route::get('admin/semua-produk','index')->name('adminallproduk');
@@ -168,29 +181,46 @@ use App\Models\tradeins;
      Route::post('admin/tawaran/approvenoprice/{id}','setujunoprice')->name('setujunoprice');
      Route::post('admin/tawaran/reject/{id}','reject')->name('reject');
      Route::post('admin/tawaran/batal/{id}','batal')->name('batal');
+     Route::post('admin/trade','tawarantrade')->name('tawarantrade');
+
     });
 
     Route::controller(AdminOrderCOntroller::class)->group(function(){
         Route::get('admin/semua-pemesanan','index')->name('semua-pemesanan');
         Route::get('/admin/detilpemesanan/{id}', 'detilpemesanan')->name('detil-pemesanan');
-        Route::post('admin/approvepe/{order_id}','approvepem')->name('approvepem');
+        Route::post('admin/approvepem/{order_id}','approvepem')->name('approvepem');
+        Route::post('admin/rejectpem/{order_id}','rejectpem')->name('rejectpem');
+        Route::get('/orders-chart-pdf', 'exportPDF')->name('chart.pdf');
+        Route::get('/orders-chart','showChart')->name('chart');
+        Route::post('admin/approveorder/{id}','approveorder')->name('approveorder');
+        Route::post('admin/rejectorder/{id}','rejectorder')->name('rejectorder');
     });
 
 
 
     Route::controller(AdminJual::class)->group(function(){
         Route::get('admin/semua-jual','index')->name('semuajual');
-        // Route::get('/admin/detilpemesanan/{id}', 'detilpemesanan')->name('detil-pemesanan');
-        // Route::post('admin/approvepe/{order_id}','approvepem')->name('approvepem');
+        Route::post('admin/tawaran/bataljual/{id}','batal')->name('bataljual');
+        Route::get('/admin/detiljual/{id}', 'detiljual')->name('detil-jual');
+        Route::post('admin/tawaranjual','tawaran')->name('tawaranjualadmin');
+        Route::post('admin/approvepe/{id}','approvejual')->name('approvejual');
+        Route::post('admin/rejectjual/{id}','rejectjual')->name('rejectjual');
+        Route::post('admin/batalorder/{id}','batalorder')->name('batalorder');
+
     });
 
 
 
     Route::controller(AdminReprasi::class)->group(function(){
         Route::get('admin/semua-reprasi','index')->name('semua-reprasi');
-        // Route::get('/admin/detilpemesanan/{id}', 'detilpemesanan')->name('detil-pemesanan');
+        Route::get('/admin/detilreprasi/{id}', 'detilreprasi')->name('detil-reprasi');
         // Route::post('admin/approvepe/{order_id}','approvepem')->name('approvepem');
+        Route::post('admin/batal/{id}','batalreprasi')->name('batalreprasi');
+        Route::post('admin/approvereq/{id}','approvereq')->name('approvereq');
+        Route::post('admin/rejectreq/{id}','rejectreq')->name('rejectreq');
     });
+});
+
 
 
 Route::middleware('auth')->group(function () {

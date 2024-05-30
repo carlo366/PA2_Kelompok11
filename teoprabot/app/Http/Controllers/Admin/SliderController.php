@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Slider;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class SliderController extends Controller
 {
@@ -15,6 +16,7 @@ class SliderController extends Controller
 
     public function storeslider(Request $request)
     {
+        $user_id = Auth::id();
         $jumlah_slider = Slider::count();
 
         // Validasi jumlah slider
@@ -42,6 +44,7 @@ class SliderController extends Controller
 
             // Insert the new slider into the database
             Slider::create([
+                'user_id' => $user_id,
                 'name' => $request->name,
                 'gambar' => $image_url
             ]);

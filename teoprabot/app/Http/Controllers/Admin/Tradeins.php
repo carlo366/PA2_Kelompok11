@@ -7,6 +7,7 @@ use App\Models\tradeins as ModelsTradeins;
 use App\Models\tradeins_category;
 use App\Models\tradeinsimage;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class Tradeins extends Controller
 {
@@ -93,5 +94,32 @@ class Tradeins extends Controller
         // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', 'Status tawaran berhasil dibatalkan.');
     }
+
+    public function tawarantrade(Request $request)
+    {
+       // Validasi data input
+   $request->validate([
+    'id' => 'required|exists:tradeins,id',
+    'price' => 'required|numeric|min:0',
+]);
+
+try {
+    // Cari record trade-in berdasarkan ID
+    $tradein = ModelsTradeins::findOrFail($request->id);
+
+    // Update field 'price'
+    $tradein->price = $request->price;
+    $tradein->save();
+
+    // Redirect kembali dengan pesan sukses
+    return redirect()->back()->with('success', 'Tawaran berhasil ditambahkan');
+} catch (\Exception $e) {
+    // Tangani potensi error
+    return redirect()->back()->with('error', 'Terjadi kesalahan saat menambahkan tawaran');
+}
+    }
+
+
+
 
 }

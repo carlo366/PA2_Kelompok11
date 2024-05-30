@@ -7,15 +7,17 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.8.1/font/bootstrap-icons.min.css">
     <style>
-        body {
+          body {
             background-color: #f8f9fa;
             padding: 2rem;
+            animation: fade-in 1s ease-in-out;
         }
         .form-container {
             background-color: white;
             padding: 2rem;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            animation: fade-in 1s ease-in-out;
         }
         .form-header {
             display: flex;
@@ -48,7 +50,7 @@
         .btn-primary:hover {
             background: linear-gradient(to bottom, #2B1700, #402218);
         }
-    .image-preview {
+        .image-preview {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
@@ -57,6 +59,14 @@
             max-width: 200px;
             max-height: 200px;
             object-fit: cover;
+        }
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
         }
     </style>
 </head>

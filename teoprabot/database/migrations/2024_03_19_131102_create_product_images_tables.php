@@ -15,6 +15,8 @@ return new class extends Migration
     {
         Schema::create('product_images', function (Blueprint $table) {
             $table->id('images_id');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('product_id'); // Menyesuaikan kolom product_id
     $table->foreign('product_id')->references('id_products')->on('products');
             $table->string('image');

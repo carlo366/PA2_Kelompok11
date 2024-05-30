@@ -52,7 +52,7 @@
                             <td>{{$tr->nameproduct}}</td>
                             <td>{{$tr->kondisi}}</td>
                             <td>
-                                <a href="{{route('detil-tradeins', $tr->id)}}" class="btn btn-info">View</a>
+                                <a href="{{route('detil-reprasi', $tr->id)}}" class="btn btn-info">View</a>
                             </td>
                         </tr>
                         @endforeach

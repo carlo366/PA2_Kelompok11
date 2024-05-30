@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Events\OrderDelivered;
+use App\Listeners\NotifyOrderDelivered;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,6 +13,14 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
+
+
+     protected $listen = [
+        // ...
+        OrderDelivered::class => [
+            NotifyOrderDelivered::class,
+        ],
+    ];
     public function register()
     {
         //

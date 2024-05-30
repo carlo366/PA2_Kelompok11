@@ -277,10 +277,6 @@
                         </div>
                     </nav>
                 </div>
-
-
-
-
                 <div class="col-lg-3">
                     <div class="header__cart">
                         <ul>
@@ -296,8 +292,17 @@
 @endif
 
                         </div>
-                        <div class="header__cart__price"><a href="{{route('perbaiki')}}" class="btn btn-success jualbeli" style="padding:0.01em 2em;margin:0.5em 0em;" >+ <span  class="text-dark">Perbaiki</span></a></div>
 
+                        @php
+                        $userid = Auth::id();
+                        $totalreprasi = App\Models\Reprasi::where('user_id', $userid)->count();
+                @endphp
+                @if($totalreprasi == 0)
+                        <div class="header__cart__price"><a href="{{route('perbaiki')}}" class="btn btn-success jualbeli" style="padding:0.01em 2em;margin:0.5em 0em;" >+ <span  class="text-dark">Perbaiki</span></a></div>
+                        @else
+                        <div class="header__cart__price"><a href="{{route('indexreprasi')}}" class="btn btn-success jualbeli" style="padding:0.01em 2em;margin:0.5em 0em;" >+ <span  class="text-dark">Perbaiki</span></a></div>
+
+                        @endif
                     </div>
                 </div>
             </div>
@@ -370,7 +375,16 @@
             </div>
         </div>
     </div>
+    @php
+            $userid = Auth::id();
+            $totaljual = App\Models\Jual::where('user_id', $userid)->count();
+    @endphp
+    @if($totaljual == 0)
     <a href="{{route('jualcategory')}}" class="show-button">+ Jual</a>
+    @else
+    <a href="{{route('indexjual')}}" class="show-button">+ Jual</a>
+
+    @endif
 <!-- Modal Form Login -->
 <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen-lg-down">
@@ -407,7 +421,8 @@
             <button type="submit" style="background-color:#AF8260 ;border:#AF8260" class="inputath w-100 p-2">Login</button>
           </form>
           <!-- <hr> -->
-          <p class="text-muted text-center mb-5">Belum punya akun? <a href="#" class="" style="color: blue;" data-bs-toggle="modal" data-bs-target="#registerModal" data-bs-dismiss="modal">Daftar</a></p>
+          <br>
+          <p class="text-muted text-center mb-5">Belum punya akun? <a href="{{route('register')}}" class="" style="color: blue;">Daftar</a></p>
         </div>
 
       </div>

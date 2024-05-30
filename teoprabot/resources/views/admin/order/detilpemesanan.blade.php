@@ -92,7 +92,18 @@
 
 <div class="card">
 <div class="card-header">
+    @if ($order->metode == 'cod')
     <h4 class="card-title">Hasil</h4>
+    <form action="{{ route('approvepem', $order->id_orders) }}" method="POST">
+        @csrf <!-- Include CSRF token for security -->
+        <button type="submit" class="btn btn-primary">Setuju Harga Customer</button>
+    </form>
+
+    <form action="{{route('rejectorder',$order->id_orders)}}" method="POST">
+        @csrf
+        <button type="submit" class="btn btn-danger me-2">Reject</button>
+    </form>
+    @endif
   </div>
   <div class="card-content">
     <div class="card-body">
@@ -116,9 +127,16 @@
                         <button type="submit" class="btn btn-success">Approve</button>
                     </form>                </div>
 
-            @endif
-            @endif
-        @endif
+
+                    @endif
+                    @endif
+                    @endif
+                    @if ($order->status == 'packaging')
+                    <h5 class="card-title">Bukti Pembayaran</h5>
+                    <img src="{{ asset($order->img_bayar) }}" alt="Bukti Pembayaran" style="max-width: 100%; height: auto;">
+                    <br>
+                    <a href="{{route('semua-pemesanan')}}" class="btn btn-danger">Back</a>
+                    @endif
     @elseif ($order->status == 'cod')
     @endif
 
